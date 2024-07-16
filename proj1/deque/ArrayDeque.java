@@ -33,6 +33,15 @@ public class ArrayDeque<T> {
         }
     }
 
+    private int realIndex(int index) {
+        int realIndex = index + nextFirst + 1;
+        if (realIndex < items.length) {
+            return realIndex;
+        } else {
+            return realIndex - items.length;
+        }
+    }
+
     public int size() {
         return size;
     }
@@ -56,8 +65,9 @@ public class ArrayDeque<T> {
             return null;
         }
 
-        T first = items[nextFirst + 1];
-        nextFirst += 1;
+        int realIndex = realIndex(0);
+        T first = items[realIndex];
+        nextFirst = realIndex;
         //items[nextFirst + 1] = null;
         size -= 1;
         return first;
@@ -68,19 +78,16 @@ public class ArrayDeque<T> {
             return null;
         }
 
-        T last = items[nextLast - 1];
-        nextLast -= 1;
+        int realIndex = realIndex(size - 1);
+        T last = items[realIndex];
+        nextLast -= realIndex;
         //items[nextLast - 1] = null;
         size -= 1;
         return last;
     }
 
     public T get(int index) {
-        int realIndex = index + nextFirst + 1;
-        if (realIndex < items.length) {
-            return items[realIndex];
-        } else {
-            return items[realIndex - items.length];
-        }
+        int realIndex = realIndex(index);
+        return items[realIndex];
     }
 }
