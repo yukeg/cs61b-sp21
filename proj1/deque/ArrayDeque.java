@@ -15,13 +15,21 @@ public class ArrayDeque<T> {
 
     public void addFirst(T item) {
         items[nextFirst] = item;
-        nextFirst -= 1;
+        if (nextFirst == 0) {
+            nextFirst = items.length - 1;
+        } else {
+            nextFirst -= 1;
+        }
         size += 1;
     }
 
     public void addLast(T item) {
         items[nextLast] = item;
-        nextLast += 1;
+        if (nextLast == items.length - 1) {
+            nextLast = 0;
+        } else {
+            nextLast += 1;
+        }
         size += 1;
     }
 
