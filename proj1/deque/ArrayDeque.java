@@ -19,7 +19,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         T[] a = (T[]) new Object[capacity];
 //        System.arraycopy(items, realIndex(0), a, 0, items.length - realIndex(0));
 //        if (size > items.length - realIndex(0)) {
-//            System.arraycopy(items, 0, a, items.length - realIndex(0), size - (items.length - realIndex(0)));
+//            System.arraycopy(items, 0, a, items.length - realIndex(0),
+//            size - (items.length - realIndex(0)));
 //        }
         for (int i = 0; i < size; i++) {
             a[i] = get(i);
@@ -88,7 +89,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         }
 
         if (4 * size < items.length && size >= 17) {
-            resize(items.length/2);
+            resize(items.length / 2);
         }
 
         int realIndex = realIndex(0);
@@ -106,7 +107,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         }
 
         if (4 * size < items.length && size >= 17) {
-            resize(items.length/2);
+            resize(items.length / 2);
         }
 
         int realIndex = realIndex(size - 1);
@@ -126,7 +127,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private class ArrayDequeIterator implements Iterator<T> {
         private int wizPos;
 
-        public ArrayDequeIterator() {
+        private ArrayDequeIterator() {
             wizPos = 0;
         }
 
@@ -150,9 +151,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         if (this == other) {
             return true;
         }
-        if (other instanceof ArrayDeque) {
-            ArrayDeque<T> otherDeque = (ArrayDeque<T>) other;
-            if (this.size != otherDeque.size) {
+        if (other instanceof Deque) {
+            Deque<T> otherDeque = (Deque<T>) other;
+            if (this.size != otherDeque.size()) {
                 return false;
             }
             for (int i = 0; i < size; i++) {
