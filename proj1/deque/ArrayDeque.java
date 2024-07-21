@@ -1,6 +1,8 @@
 package deque;
 
-public class ArrayDeque<T> {
+import java.util.Iterator;
+
+public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private T[] items;
     private int size;
     private int nextFirst;
@@ -13,7 +15,26 @@ public class ArrayDeque<T> {
         nextLast = 5;
     }
 
+    private void resize(int capacity) {
+        T[] a = (T[]) new Object[capacity];
+//        System.arraycopy(items, realIndex(0), a, 0, items.length - realIndex(0));
+//        if (size > items.length - realIndex(0)) {
+//            System.arraycopy(items, 0, a, items.length - realIndex(0), size - (items.length - realIndex(0)));
+//        }
+        for (int i = 0; i < size; i++) {
+            a[i] = get(i);
+        }
+        nextFirst = capacity - 1;
+        nextLast = size;
+        items = a;
+    }
+
+    @Override
     public void addFirst(T item) {
+        if (size == items.length) {
+            resize(items.length * 2);
+        }
+
         items[nextFirst] = item;
         if (nextFirst == 0) {
             nextFirst = items.length - 1;
@@ -23,7 +44,12 @@ public class ArrayDeque<T> {
         size += 1;
     }
 
+    @Override
     public void addLast(T item) {
+        if (size == items.length) {
+            resize(items.length * 2);
+        }
+
         items[nextLast] = item;
         if (nextLast == items.length - 1) {
             nextLast = 0;
@@ -31,14 +57,6 @@ public class ArrayDeque<T> {
             nextLast += 1;
         }
         size += 1;
-    }
-
-    public boolean isEmpty() {
-        if (size == 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     private int realIndex(int index) {
@@ -50,27 +68,27 @@ public class ArrayDeque<T> {
         }
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public void printDeque() {
-        int i = nextFirst + 1;
-        while (i < items.length && items[i] != null) {
-            System.out.print(items[i] + " ");
-            i += 1;
+        for (T x : this) {
+            System.out.print(x.toString() + " ");
         }
-
-        int j = 0;
-        while (j < nextFirst + 1 && items[j] != null) {
-            System.out.print(items[j] + " ");
-            i += 1;
-        }
+        System.out.println("");
     }
 
+    @Override
     public T removeFirst() {
         if (isEmpty()) {
             return null;
+        }
+
+        if (4 * size < items.length && size >= 17) {
+            resize(items.length/2);
         }
 
         int realIndex = realIndex(0);
@@ -81,9 +99,14 @@ public class ArrayDeque<T> {
         return first;
     }
 
+    @Override
     public T removeLast() {
         if (isEmpty()) {
             return null;
+        }
+
+        if (4 * size < items.length && size >= 17) {
+            resize(items.length/2);
         }
 
         int realIndex = realIndex(size - 1);
@@ -94,8 +117,50 @@ public class ArrayDeque<T> {
         return last;
     }
 
+    @Override
     public T get(int index) {
         int realIndex = realIndex(index);
         return items[realIndex];
+    }
+
+    private class ArrayDequeIterator implements Iterator<T> {
+        private int wizPos;
+
+        public ArrayDequeIterator() {
+            wizPos = 0;
+        }
+
+        public boolean hasNext() {
+            return wizPos < size;
+        }
+
+        public T next() {
+            T returnItem = get(wizPos);
+            wizPos += 1;
+            return returnItem;
+        }
+    }
+
+    public Iterator<T> iterator() {
+        return new ArrayDequeIterator();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof ArrayDeque otherDeque) {
+            if (this.size != otherDeque.size) {
+                return false;
+            }
+            for (int i = 0; i < size; i++) {
+                if (!(otherDeque.get(i).equals(this.get(i)))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }
