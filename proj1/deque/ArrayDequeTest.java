@@ -148,4 +148,16 @@ public class ArrayDequeTest {
         }
     }
 
+    @Test
+    public void addAndRemove() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+//        lld1.addLast(0);
+//        assertEquals(0, (int) lld1.get(0));
+//        assertEquals(0, (int) lld1.removeFirst());
+        lld1.addFirst(3);
+        assertEquals(3, (int) lld1.removeLast());
+        lld1.addLast(5);
+        assertEquals(5, (int) lld1.removeFirst());
+    }
+
 }

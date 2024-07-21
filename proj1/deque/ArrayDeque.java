@@ -112,7 +112,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
         int realIndex = realIndex(size - 1);
         T last = items[realIndex];
-        nextLast -= realIndex;
+        nextLast = realIndex;
         //items[nextLast - 1] = null;
         size -= 1;
         return last;
