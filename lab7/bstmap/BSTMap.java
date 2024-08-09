@@ -1,7 +1,9 @@
 package bstmap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.List;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
@@ -87,26 +89,123 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     public void printInOrder() {
-        throw new UnsupportedOperationException("Operation not supported");
+        for (BSTNode node : nodesInOrder(root)) {
+            System.out.print(node.key.toString() + ' ');
+        }
     }
 
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException("Operation not supported");
+        if (size == 0) {
+            return null;
+        }
+        List<K> keys = new ArrayList<>();
+        for (BSTNode node : nodesInOrder(root)) {
+            keys.add(node.key);
+        }
+        return Set.copyOf(keys);
     }
 
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException("Operation not supported");
+        BSTNode delNode = find(root, key);
+        if (delNode == null) {
+            return null;
+        } else {
+            size--;
+            BSTNode delParent = parent(root, delNode);
+
+            if (delParent == null) {
+                if (delNode.left == null && delNode.right == null ) {
+                    clear();
+                } else if (delNode.left == null) {
+                    root = delNode.right;
+                } else if (delNode.right == null) {
+                    root = delNode.left;
+                } else {
+                    BSTNode predecessor = findPredecessor(delNode);
+                    remove(predecessor.key);
+                    delNode.key = predecessor.key;
+                    delNode.val = predecessor.val;
+                }
+            } else {
+
+                if (delNode.left == null && delNode.right == null ) {
+                    if (delParent.left == delNode) {
+                        delParent.left = null;
+                    } else {
+                        delParent.right = null;
+                    }
+                } else if (delNode.left == null) {
+                    if (delParent.left == delNode) {
+                        delParent.left = delNode.right;
+                    } else {
+                        delParent.right = delNode.right;
+                    }
+                } else if (delNode.right == null) {
+                    if (delParent.left == delNode) {
+                        delParent.left = delNode.left;
+                    } else {
+                        delParent.right = delNode.left;
+                    }
+                } else {
+                    BSTNode predecessor = findPredecessor(delNode);
+                    remove(predecessor.key);
+                    delNode.key = predecessor.key;
+                    delNode.val = predecessor.val;
+                }
+            }
+            return delNode.val;
+        }
     }
 
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException("Operation not supported");
+        BSTNode delNode = find(root, key);
+        if (delNode.val == value) {
+            return remove(key);
+        } else {
+            return null;
+        }
+    }
+
+    private BSTNode parent(BSTNode curNode, BSTNode tarNode) {
+        if (tarNode == root || root == null) {
+            return null;
+        }
+        if (curNode.left == tarNode || curNode.right == tarNode ) {
+            return curNode;
+        }
+        if (curNode.key.compareTo(tarNode.key) > 0) {
+            return parent(curNode.left, tarNode);
+        } else {
+            return parent(curNode.right, tarNode);
+        }
+    }
+
+    private BSTNode findPredecessor(BSTNode curNode) {
+        curNode = curNode.left;
+        while (curNode.right != null) {
+            curNode = curNode.right;
+        }
+        return curNode;
     }
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException("Operation not supported");
+        return keySet().iterator();
     }
+
+    private List<BSTNode> nodesInOrder(BSTNode node) {
+        List<BSTNode> keys = new ArrayList<>();
+        if (node.left != null) {
+            keys.addAll(nodesInOrder(node.left));
+        }
+        keys.add(node);
+        if (node.right != null) {
+            keys.addAll(nodesInOrder(node.right));
+        }
+        return keys;
+    }
+
 }
