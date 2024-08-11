@@ -200,11 +200,32 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
 
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException("Operation not supported");
+        if (!containsKey(key)) {
+            return null;
+        }
+
+        int bucketInd = getBucketInd(key);
+        Collection<Node> bucket = buckets[bucketInd];
+        for (Node node : bucket) {
+            if (node.key.equals(key)) {
+                bucket.remove(node);
+                return node.value;
+            }
+        }
+        return null;
     }
 
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException("Operation not supported");
+        if (!containsKey(key)) {
+            return null;
+        }
+
+        if (!get(key).equals(value)) {
+            return null;
+        } else {
+            remove(key);
+        }
+        return null;
     }
 }
