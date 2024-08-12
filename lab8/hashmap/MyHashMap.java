@@ -156,7 +156,13 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
     }
 
     private void resize() {
-
+        int newSize = size * 2;
+        MyHashMap<K, V> newMap = new MyHashMap<>(newSize);
+        for (K key : this) {
+            newMap.put(key, get(key));
+        }
+        size = newSize;
+        buckets = newMap.buckets;
     }
 
     @Override
@@ -187,8 +193,10 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
         }
         Set<K> keys = new HashSet<>();
         for (Collection<Node> bucket : buckets) {
-            for (Node node : bucket) {
-                keys.add(node.key);
+            if (bucket != null) {
+                for (Node node : bucket) {
+                    keys.add(node.key);
+                }
             }
         }
         return keys;
